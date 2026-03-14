@@ -6,21 +6,10 @@ function App() {
   const { photos, loading, error } = useFetchPhotos();
   const [favourites, dispatch] = useReducer(favouritesReducer, initialFavouritesState);
   const [searchQuery, setSearchQuery] = useState('');
-
-  /**
-   * useCallback memoizes the event handler function.
-   * This ensures the function instance remains the same between normal renders,
-   * preventing unnecessary re-renders of any child components that might use this handler.
-   */
   const handleSearchChange = useCallback((e) => {
     setSearchQuery(e.target.value);
   }, []);
 
-  /**
-   * useMemo caches the computed filtered list of photos.
-   * The filtering array manipulation computationally runs ONLY when 'photos' or 'searchQuery' updates.
-   * It skips running during other state changes, saving CPU cycles on larger lists.
-   */
   const filteredPhotos = useMemo(() => {
     if (!searchQuery.trim()) return photos;
     
@@ -38,7 +27,6 @@ function App() {
       <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl font-extrabold text-center mb-10 text-gray-800">Photo Gallery Component</h1>
         
-        {/* Search Filter */}
         <div className="mb-10 flex justify-center">
           <input
             type="text"
@@ -49,21 +37,18 @@ function App() {
           />
         </div>
 
-        {/* Loading Spinner */}
         {loading && (
           <div className="flex justify-center items-center mt-20">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
           </div>
         )}
         
-        {/* Error State */}
         {error && (
           <div className="text-center text-red-600 font-medium p-4 bg-red-100 rounded-lg max-w-2xl mx-auto">
             Error fetching data: {error}
           </div>
         )}
 
-        {/* Photo Grid */}
         {!loading && !error && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {filteredPhotos.map((photo) => {
@@ -104,7 +89,6 @@ function App() {
           </div>
         )}
         
-        {/* Empty Search Result Fallback */}
         {!loading && !error && filteredPhotos.length === 0 && (
           <div className="text-center text-gray-500 mt-16 text-lg">
             No authors found matching "{searchQuery}".
